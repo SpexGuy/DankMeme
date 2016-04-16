@@ -4,5 +4,8 @@
 public class ClientRunner {
     public static void main(String[] args) {
         System.out.println("Hello, Client!");
+
+        Game game = new Game();
+        game.mainLoop();
     }
 }
