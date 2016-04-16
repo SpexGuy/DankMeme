@@ -9,7 +9,7 @@ import java.awt.event.MouseEvent;
  */
 public class Game {
     private static final int WIDTH = 1024;
-    private static final int HEIGHT = 768;
+    private static final int HEIGHT = 640;
 
     private Window window;
 
