@@ -13,6 +13,8 @@ public class Game {
 
     private Window window;
 
+    CardAccordion test = new CardAccordion(50, 50);
+
     int xPos = 0;
     int yPos = 0;
 
@@ -32,13 +34,16 @@ public class Game {
             int delta = (int) (now - lastLoopTime);
             lastLoopTime = now;
 
+            test.update(delta);
+
             // Get hold of a graphics context for the accelerated
             // surface and blank it out
             Graphics2D g = window.getRenderFrame();
             g.setColor(Color.DARK_GRAY);
             g.fillRect(0, 0, WIDTH, HEIGHT);
 
-            g.drawImage(back, xPos, yPos, null);
+            //g.drawImage(back, xPos, yPos, null);
+            test.draw(g);
 
             window.finishRenderFrame(g);
 
@@ -75,6 +80,16 @@ public class Game {
 
         @Override
         public void keyTyped(KeyEvent e) {
+            if (e.getExtendedKeyCode() == KeyEvent.VK_O) {
+                test.expand(true);
+            } else if (e.getExtendedKeyCode() == KeyEvent.VK_C) {
+                test.expand(false);
+            } else if (e.getKeyChar() >= '1' && e.getKeyChar() <= '8') {
+                int idx = e.getKeyChar() - '1';
+                test.addCard(CardType.values()[idx]);
+            } else if (e.getExtendedKeyCode() == KeyEvent.VK_R) {
+                test.reset();
+            }
         }
     }
 
