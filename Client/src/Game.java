@@ -8,11 +8,19 @@ import java.awt.event.MouseEvent;
  * Created by martin on 4/16/16.
  */
 public class Game {
+    private static final int WIDTH = 1024;
+    private static final int HEIGHT = 768;
+
     private Window window;
 
+    int xPos = 0;
+    int yPos = 0;
+
     public void mainLoop() {
-        window = new Window(new KeyInputHandler(), new MouseInputHandler());
+        window = new Window(WIDTH, HEIGHT, new KeyInputHandler(), new MouseInputHandler());
         long lastLoopTime = System.currentTimeMillis();
+
+        Image back = ImageStore.get().getImage("back.png");
 
         // keep looping round til the game ends
         while (true) {
@@ -28,8 +36,9 @@ public class Game {
             // surface and blank it out
             Graphics2D g = window.getRenderFrame();
             g.setColor(Color.DARK_GRAY);
-            g.fillRect(0, 0, 800, 600);
+            g.fillRect(0, 0, WIDTH, HEIGHT);
 
+            g.drawImage(back, xPos, yPos, null);
 
             window.finishRenderFrame(g);
 
@@ -45,6 +54,8 @@ public class Game {
 
         @Override
         public void mouseMoved(MouseEvent e) {
+            xPos = e.getX();
+            yPos = e.getY();
         }
         @Override
         public void mouseDragged(MouseEvent e) {

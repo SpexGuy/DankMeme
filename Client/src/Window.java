@@ -12,17 +12,17 @@ public class Window extends Canvas {
     private List<Drawable> drawables = new ArrayList<>();
     private BufferStrategy strategy;
 
-    public Window(KeyAdapter keyboard, MouseAdapter mouse) {
+    public Window(int width, int height, KeyAdapter keyboard, MouseAdapter mouse) {
         // create a frame to contain our game
         JFrame container = new JFrame("DankMeme Client v0.0.1");
 
         // get hold the content of the frame and set up the resolution of the game
         JPanel panel = (JPanel) container.getContentPane();
-        panel.setPreferredSize(new Dimension(800,600));
+        panel.setPreferredSize(new Dimension(width,height));
         panel.setLayout(null);
 
         // setup our canvas size and put it into the content of the frame
-        setBounds(0,0,800,600);
+        setBounds(0,0,width,height);
         panel.add(this);
 
         // Tell AWT not to bother repainting our canvas since we're
