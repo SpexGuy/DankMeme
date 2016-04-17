@@ -13,7 +13,7 @@ public class Prince extends Card {
     }
 
     public void play(Player whoPlayed) {
-        Player chosenPlayer = whoPlayed.choosePlayer();
+        Player chosenPlayer = whoPlayed.choosePlayer(this);
         assert (chosenPlayer.isActive());
         if (chosenPlayer.isProtected()) return; //no effect if chosen player is protected
 

@@ -24,6 +24,8 @@ public class Game {
 
     private final Server server;
 
+    private final Cursor cursor = new Cursor();
+
     private boolean gameStarted;
 
     private List<Player> players;
@@ -85,12 +87,16 @@ public class Game {
                 for (PlayerView p : playerViews) {
                     p.hover(newPos.x, newPos.y);
                 }
+                cursor.hover(newPos.x, newPos.y);
             }
 
             // Click updates
             Point clickPos = mouse.checkClick();
             if (clickPos != null) {
                 hand.click(clickPos.x, clickPos.y);
+                for (PlayerView p : playerViews) {
+                    p.click(clickPos.x, clickPos.y);
+                }
             }
 
             //currentMode.act();
@@ -107,6 +113,7 @@ public class Game {
                 p.draw(g);
             }
             hand.draw(g);
+            cursor.draw(g);
 
             window.finishRenderFrame(g);
 
@@ -179,7 +186,7 @@ public class Game {
             playerStart(turnStarted);
 
         } else if (notif instanceof ChoosePlayerNotification) {
-            choosePlayer(null);
+            choosePlayer(getCard(((ChoosePlayerNotification) notif).rank));
 
         } else if (notif instanceof GameStartNotification) {
             GameStartNotification gsn = (GameStartNotification) notif;
@@ -244,7 +251,7 @@ public class Game {
             if (c != myId) {
                 Player p = new Player(c);
                 players.add(p);
-                playerViews.add(new PlayerView(playerViews.size(), p));
+                playerViews.add(new PlayerView(this, playerViews.size(), p));
             } else {
                 self = new Player(c); // TODO: special self player
                 players.add(self);
@@ -266,10 +273,18 @@ public class Game {
     public void choosePlayer(CardType card) {
         //choosePlayerDialog.show(card == CardType.Prince);
         System.out.println("Choose a player");
+        for (PlayerView p : playerViews) {
+            p.pickable = true;
+        }
+        cursor.show(card);
     }
     public void playerChosen(Player p) {
         //choosePlayerDialog.hide();
         server.choosePlayer(p.id);
+        for (PlayerView v : playerViews) {
+            v.pickable = false;
+        }
+        cursor.hide();
     }
 
     public void swapCard(Player source, CardType card) {

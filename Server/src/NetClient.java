@@ -53,8 +53,8 @@ public class NetClient implements Client {
     }
 
     @Override
-    public int choosePlayer() {
-        writeObject(new ChoosePlayerNotification());
+    public int choosePlayer(Card card) {
+        writeObject(new ChoosePlayerNotification(card.getRank()));
         try {
             PlayerChosenNotification pcn = (PlayerChosenNotification) ois.readObject();
             return pcn.id;

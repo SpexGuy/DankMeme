@@ -13,7 +13,7 @@ public class King extends Card {
     }
 
     public void play(Player whoPlayed){
-        Player opponent = whoPlayed.choosePlayer();
+        Player opponent = whoPlayed.choosePlayer(this);
         assert(opponent.isActive());
         if (opponent.isProtected()) return; //no effect if chosen opponent is protected
 

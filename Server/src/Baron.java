@@ -11,7 +11,7 @@ public class Baron extends Card {
     }
 
     public void play(Player whoPlayed){
-        Player opponent = whoPlayed.choosePlayer();
+        Player opponent = whoPlayed.choosePlayer(this);
         assert(opponent.getId() != whoPlayed.getId());
         assert(opponent.isActive());
         if (opponent.isProtected()) return; //no effect if opponent is protected

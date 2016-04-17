@@ -30,7 +30,7 @@ public class LocalClient implements Client {
         }
     }
 
-    public int choosePlayer(){
+    public int choosePlayer(Card card){
         System.out.print("Choose a player id: ");
         int chosenId = stdin.nextInt();
         return chosenId;

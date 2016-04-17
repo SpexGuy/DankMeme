@@ -56,8 +56,8 @@ public class Player {
 
     }
 
-    public Player choosePlayer(){
-        int id = client.choosePlayer();
+    public Player choosePlayer(Card card){
+        int id = client.choosePlayer(card);
         return game.findPlayer(id);
     }
     public int chooseCard(){
