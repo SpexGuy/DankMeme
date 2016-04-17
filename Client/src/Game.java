@@ -24,6 +24,8 @@ public class Game {
 
     private final Server server;
 
+    private boolean gameStarted;
+
     private List<Player> players;
     private List<PlayerView> playerViews;
     private Player self;
@@ -36,10 +38,24 @@ public class Game {
         window = new Window(WIDTH, HEIGHT, new KeyInputHandler(), new MouseInputHandler());
         long lastLoopTime = System.currentTimeMillis();
 
-        startGame(4, 0);
-        setup(CardType.Guard);
-
         Image back = ImageStore.get().getImage("back.png");
+
+        Graphics2D g2 = window.getRenderFrame();
+        g2.setColor(Color.DARK_GRAY);
+        g2.fillRect(0, 0, WIDTH, HEIGHT);
+
+        g2.setColor(Color.RED);
+        g2.drawString("Waiting for players...", 100, 100);
+
+        window.finishRenderFrame(g2);
+
+        gameStarted = false;
+        while (!gameStarted) {
+            Notification notif = notifications.poll();
+            if (notif != null) {
+                processNotification(notif);
+            }
+        }
 
         // keep looping round til the game ends
         while (true) {
@@ -221,6 +237,7 @@ public class Game {
 
 
     public void startGame(int numPlayers, int myId) {
+        gameStarted = true;
         players = new ArrayList<>();
         playerViews = new ArrayList<>();
         for (int c = 0; c < numPlayers; c++) {
@@ -283,10 +300,6 @@ public class Game {
         p.win(card);
     }
 
-    public void lose() {
-        //history.addCard(hand.removeCard());
-    }
-
     public void baron(Player p1, Player p2, boolean p1Won, CardType loserCard) {
         if (p1Won) {
             p2.lose(loserCard);
@@ -344,10 +357,6 @@ public class Game {
             if (e.getKeyChar() >= '2' && e.getKeyChar() <= '8') {
                 int idx = e.getKeyChar() - '1';
                 cardGuessed(CardType.values()[idx]);
-            } else if (e.getExtendedKeyCode() == KeyEvent.VK_R) {
-                setup(CardType.Guard);
-            } else if (e.getExtendedKeyCode() == KeyEvent.VK_L) {
-                lose();
             } else if (e.getExtendedKeyCode() == KeyEvent.VK_A) {
                 playerChosen(players.get(0));
             } else if (e.getExtendedKeyCode() == KeyEvent.VK_B) {
