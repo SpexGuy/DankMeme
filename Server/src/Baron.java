@@ -1,3 +1,5 @@
+import java.util.List;
+
 /**
  * Created by Jordan on 4/16/2016.
  *
@@ -21,8 +23,18 @@ public class Baron extends Card {
         int oppRank = opponent.getCurrentCard().getRank();
         if (oppRank > this.rank){
             whoPlayed.setActive(false);
+            List<Player> players = game.getPlayers();
+            for (Player p : players){
+                p.notifyBaron(whoPlayed, opponent, opponent, opponent.getCurrentCard());
+            }
+
         } else if (oppRank < this.rank){
             opponent.setActive(false);
+            List<Player> players = game.getPlayers();
+            for (Player p : players){
+                p.notifyBaron(whoPlayed, opponent, whoPlayed, this);
+            }
+
         } else {
             //tie = nothing happens
         }

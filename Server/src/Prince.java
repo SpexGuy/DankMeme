@@ -1,3 +1,5 @@
+import java.util.List;
+
 /**
  * Created by Jordan on 4/16/2016.
  *
@@ -10,16 +12,24 @@ public class Prince extends Card {
         super(game);
     }
 
-    public void play(Player whoPlayed){
+    public void play(Player whoPlayed) {
         Player chosenPlayer = whoPlayed.choosePlayer();
-        assert(chosenPlayer.isActive());
+        assert (chosenPlayer.isActive());
         notifyTheChosenOne(this, chosenPlayer);
         if (chosenPlayer.isProtected()) return; //no effect if chosen player is protected
 
+
+        //notify everyone of who is discarding
+        List<Player> players = game.getPlayers();
+        for (Player p : players) {
+            p.notifyPrince(whoPlayed, chosenPlayer, chosenPlayer.getCurrentCard());
+        }
+
         //force discard
         //check for the princess
-        if (chosenPlayer.currentCard.getRank() == 8)
+        if (chosenPlayer.currentCard.getRank() == 8) {
             chosenPlayer.setActive(false);
+        }
         else {
             chosenPlayer.currentCard = game.drawCard();
         }

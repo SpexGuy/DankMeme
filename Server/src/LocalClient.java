@@ -53,4 +53,42 @@ public class LocalClient implements Client {
     public void notifyChosen(Card c){
         System.out.println("You have been chosen to receive the effects of " + c);
     }
+
+
+    public void notifyStartGame(Card card, int numPlayers, int currId){
+    }
+
+    public void notifyStartRound(Card card){
+    }
+
+    public void notifyChooseCard(Card card){
+    }
+
+    public void notifyChoosePlayer(Player p){
+    }
+
+    public void notifyPlayerPlay(Player p, Card c){
+    }
+
+    public void notifyPlayerWon(Player p, Card c){
+    }
+
+    public void notifyPlayerLost(Player p, Card c){
+    }
+
+    public void notifyBaron(Player p1, Player p2, Player winner, Card loserCard){
+    }
+
+    public void notifyKing(Player p1, Player p2){
+    }
+
+    public void notifyGuard(Player p1, Player p2, int guess, boolean correct){
+    }
+
+    public void notifyPrince(Player p1, Player p2, Card card){
+    }
+
+    public void notifyPriest(Player p1, Player p2){
+    }
+
 }

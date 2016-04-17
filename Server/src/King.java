@@ -1,3 +1,5 @@
+import java.util.List;
+
 /**
  * Created by Jordan on 4/16/2016.
  *
@@ -19,6 +21,11 @@ public class King extends Card {
         opponent.currentCard = whoPlayed.currentCard;
         whoPlayed.currentCard = temp;
 
+        //notify everyone of the swap
+        List<Player> players = game.getPlayers();
+        for(Player p : players){
+            p.notifyKing(whoPlayed, opponent);
+        }
     }
 
     @Override

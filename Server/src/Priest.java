@@ -1,3 +1,5 @@
+import java.util.List;
+
 /**
  * Created by Jordan on 4/16/2016.
  *
@@ -15,6 +17,11 @@ public class Priest extends Card {
         assert(opponent.isActive());
         notifyTheChosenOne(this, opponent);
         if (opponent.isProtected()) return; //no effect if chosen player is protected
+
+        List<Player> players = game.getPlayers();
+        for (Player p : players){
+            p.notifyPriest(whoPlayed, opponent);
+        }
 
         //TODO display opponent's current card;
         System.out.println(opponent.getCurrentCard());

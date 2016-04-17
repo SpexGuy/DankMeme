@@ -1,3 +1,5 @@
+import java.util.List;
+
 /**
  * Created by Jordan on 4/16/2016.
  *
@@ -24,8 +26,18 @@ public class Guard extends Card {
             predictedCard = whoPlayed.chooseCard();
         } while(predictedCard == 1);
 
-        if (opponent.getCurrentCard().getRank() == predictedCard)
+        List<Player> players = game.getPlayers();
+        if (opponent.getCurrentCard().getRank() == predictedCard){
             opponent.setActive(false);
+            for(Player p : players){
+                p.notifyGuard(whoPlayed, opponent, predictedCard, true);
+            }
+        } else {
+            for(Player p : players){
+                p.notifyGuard(whoPlayed, opponent, predictedCard, false);
+            }
+        }
+
     }
 
     @Override

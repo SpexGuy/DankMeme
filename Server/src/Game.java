@@ -12,7 +12,10 @@ import static java.lang.StrictMath.round;
 public class Game {
     List<Card> cards = new ArrayList<>();
     List<Player> players;
+    boolean roundOver = false;
     boolean gameOver = false;
+    Player roundWinner = null;
+    Card winningCard = null;
     public Game() {
     }
 
@@ -50,8 +53,15 @@ public class Game {
     }
 
     void runGame(List<Player> players) {
+
+        //notify everyone that the game is on
+        for (Player p : players) {
+            p.notifyStartGame(p.getCurrentCard(), players.size(), p.getId());
+        }
+
         //run the rounds until the game is over (a player has achieved 4 points)
         int count = 1;
+        this.players = players;
         do {
             System.out.println("Round " + count);
             runRound(players);
@@ -63,13 +73,17 @@ public class Game {
 
         } while(!gameOver);
     }
+
+    public List<Player> getPlayers() {
+        return players;
+    }
+
     void runRound(List<Player> players) { // play until decksize <= 1
         Card chosenCard;
-        this.players = players;
         createDeck();
-        Player lastPlayerStanding = null;
         for (Player p : players) {
             p.setupRound(drawCard());
+            p.notifyStartRound(p.getCurrentCard());
         }
 
         do { // one iteration through the players
@@ -85,33 +99,90 @@ public class Game {
 
                 chosenCard = p.doTurn(drawCard());
 
+                /* TODO takeout????? redundant ?????
+                //notify all players that this is the card being played
+                for(Player pl : players){
+                    pl.notifyChooseCard(chosenCard);
+                } */
+
                 //notify everyone of card chosen to be played by the current turn taker
                 for (Player curr : players) {
                     curr.notifyCardPlayed(p, chosenCard);
                 }
 
                 chosenCard.play(p);
-                if (cards.size() <= 1) gameOver = true; //continue playing until one card left (reserved card)
 
-                lastPlayerStanding = playerHasWon();
-                if ( lastPlayerStanding != null)//if there is only player then he/she wins the round
-                    gameOver = true;
-                    break;
+                roundOver = isRoundOver(cards);
+                if(roundOver) break;
             }
             //TODO takeout
             System.out.println("There are " + cards.size() + " cards left in the deck");
 
-        } while (cards.size() > 1 && gameOver == false);
+        } while (!roundOver);
 
         //TODO takeout
         System.out.println("The round is over. Deck contains " + cards.size() + "cards");
 
-        lastPlayerStanding.incScore();
-        if (lastPlayerStanding.getScore() == 4) gameOver = true;
+        roundWinner.incScore(winningCard);
+        if (roundWinner.getScore() == 4) gameOver = true;
     }
-     public Player playerHasWon(){
-         Player livePlayer = null;
-         int count = 0;
+
+    boolean isRoundOver(List<Card> cards){
+        boolean cardsRemaining = false;
+        int count = 0;
+        boolean roundOver;
+        Player lastPlayer = null;
+
+        if (cards.size() > 1) cardsRemaining = true;
+
+        for( Player p : players){
+            if (p.isActive()){
+                lastPlayer = p;
+                count++;
+            }
+        }
+        if (count == 1) {
+            roundWinner = lastPlayer;
+            winningCard = lastPlayer.getCurrentCard();
+        }
+
+        if (!cardsRemaining && count > 1)
+            finalCompareHands();
+
+        roundOver = (count == 1) || !cardsRemaining;
+        if(cards.size() > 1) cardsRemaining = true;
+        return roundOver;
+    }
+
+    void finalCompareHands(){
+        List<Player> activeOnes = new ArrayList<>();
+        for(Player p : players){
+            if (p.isActive())
+                activeOnes.add(p);
+        }
+
+        //compare the hands of everyone remaining, highest wins, ties are won by the previous player (lower id)
+        Player p1;
+        Player p2;
+        Player best = null;
+        for(int i = 0; i < activeOnes.size() - 1; i++){
+            p1 = activeOnes.get(i);
+            p2 = activeOnes.get(i+1);
+            if (p1.getCurrentCard().getRank() > p1.getCurrentCard().getRank()){
+                best = p2;
+                p1.setActive(false);
+            }
+            else{
+                best = p1;
+                p2.setActive(false);
+            }
+        }
+        roundWinner = best;
+        winningCard = best.getCurrentCard();
+    }
+    public Player playerHasWon(){
+        Player livePlayer = null;
+        int count = 0;
          for(Player p : players){
              if (p.isActive()){
                  count++;
