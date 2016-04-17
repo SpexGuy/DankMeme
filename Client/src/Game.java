@@ -13,9 +13,9 @@ public class Game {
 
     private Window window;
 
-    CardAccordion test = new CardAccordion(50, 50);
+    CardAccordion history = new CardAccordion(50, 50);
 
-    private Hand hand = new Hand(this, WIDTH/2, HEIGHT - CardType.height);
+    private final Hand hand = new Hand(this, WIDTH/2, HEIGHT - CardType.height);
 
     private final Mouse mouse = new Mouse();
 
@@ -38,12 +38,13 @@ public class Game {
             lastLoopTime = now;
 
             // Timed updates
-            test.update(delta);
+            history.update(delta);
 
             // Hover updates
             Point newPos = mouse.getPosIfUpdated();
             if (newPos != null) {
                 hand.hover(newPos.x, newPos.y);
+                history.hover(newPos.x, newPos.y);
             }
 
             // Click updates
@@ -52,8 +53,6 @@ public class Game {
                 hand.click(clickPos.x, clickPos.y);
             }
 
-
-
             // Get hold of a graphics context for the accelerated
             // surface and blank it out
             Graphics2D g = window.getRenderFrame();
@@ -61,7 +60,7 @@ public class Game {
             g.fillRect(0, 0, WIDTH, HEIGHT);
 
             //g.drawImage(back, xPos, yPos, null);
-            test.draw(g);
+            history.draw(g);
             hand.draw(g);
 
             window.finishRenderFrame(g);
@@ -76,17 +75,17 @@ public class Game {
     }
 
     public void discard(CardType card, int id) {
-        test.addCard(card);
+        history.addCard(card);
         // server.chooseCard(id);
     }
 
     public void setup(CardType initial) {
-        test.reset();
+        history.reset();
         hand.setup(initial);
     }
 
     public void lose() {
-        test.addCard(hand.removeCard());
+        history.addCard(hand.removeCard());
     }
 
     private class MouseInputHandler extends MouseAdapter {
@@ -117,11 +116,7 @@ public class Game {
 
         @Override
         public void keyTyped(KeyEvent e) {
-            if (e.getExtendedKeyCode() == KeyEvent.VK_O) {
-                test.expand(true);
-            } else if (e.getExtendedKeyCode() == KeyEvent.VK_C) {
-                test.expand(false);
-            } else if (e.getKeyChar() >= '1' && e.getKeyChar() <= '8') {
+            if (e.getKeyChar() >= '1' && e.getKeyChar() <= '8') {
                 int idx = e.getKeyChar() - '1';
                 chooseCard(CardType.values()[idx]);
             } else if (e.getExtendedKeyCode() == KeyEvent.VK_R) {

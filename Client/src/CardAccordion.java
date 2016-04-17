@@ -15,6 +15,7 @@ public class CardAccordion {
     final int x, y;
     private final List<CardType> cards = new ArrayList<>();
     private int currentTime = 0;
+    private float currentWidth = 0;
     private boolean expanded = false;
 
     public CardAccordion(int x, int y) {
@@ -36,10 +37,13 @@ public class CardAccordion {
             if (currentTime < 0)
                 currentTime = 0;
         }
+
+        int expandedWidth = cardWidth * (cards.size()-1);
+        float timepos = (float) currentTime / expandTime;
+        currentWidth = Util.lerp(timepos, closedWidth, expandedWidth);
     }
 
     public void draw(Graphics2D g) {
-        int expandedWidth = cardWidth * (cards.size()-1);
 
 //        g.setColor(Color.RED);
 //        if (expanded) {
@@ -49,14 +53,27 @@ public class CardAccordion {
 //        }
 
         for (int c = 0; c < cards.size(); c++) {
-            float timepos = (float) currentTime / expandTime;
-            float width = Util.lerp(timepos, closedWidth, expandedWidth);
-
             float cardpos = c == 0 ? 0 : (float) c / (cards.size()-1);
-            int xoff = (int) (cardpos * width);
+            int xoff = (int) (cardpos * currentWidth);
 
             g.drawImage(cards.get(c).image, x+xoff, y, cardWidth, cardHeight, null);
         }
+    }
+
+    public boolean hover(int mx, int my) {
+        int width = (int) currentWidth + cardWidth;
+
+        int ax = mx - x;
+        int ay = my - y;
+        if (ax >= 0 && ax < width &&
+            ay >= 0 && ay < cardHeight) {
+
+            expanded = true;
+            return true;
+        }
+
+        expanded = false;
+        return false;
     }
 
     public void addCard(CardType card) {
