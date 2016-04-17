@@ -87,4 +87,8 @@ public class Hand {
         currentCard = null;
         return value;
     }
+
+    public void replace(CardType card) {
+        currentCard = card;
+    }
 }

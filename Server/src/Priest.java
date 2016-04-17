@@ -15,7 +15,6 @@ public class Priest extends Card {
     public void play(Player whoPlayed){
         Player opponent = whoPlayed.choosePlayer();
         assert(opponent.isActive());
-        notifyTheChosenOne(this, opponent);
         if (opponent.isProtected()) return; //no effect if chosen player is protected
 
         List<Player> players = game.getPlayers();
@@ -30,9 +29,5 @@ public class Priest extends Card {
     @Override
     public int getRank() {
         return rank;
-    }
-
-    private void notifyTheChosenOne(Card c, Player chosenOne){
-        chosenOne.notifyChosen(c);
     }
 }

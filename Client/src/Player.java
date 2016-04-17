@@ -24,11 +24,18 @@ public class Player {
         protect = false;
     }
 
-    public void discard(CardType card) {
+    public void play(CardType card) {
         isChoosing = false;
-        _history.add(card);
         if (card == CardType.Handmaid)
             protect = true;
+        discard(card);
+    }
+
+    public void discard(CardType card) {
+        if (card == CardType.Princess)
+            lose(card);
+        else
+            _history.add(card);
     }
 
     public void lose(CardType card) {
@@ -46,5 +53,6 @@ public class Player {
         active = true;
         protect = false;
         isChoosing = false;
+        _history.clear();
     }
 }

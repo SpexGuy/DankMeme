@@ -49,25 +49,7 @@ public class LocalClient implements Client {
     public void notifyCardPlayed(Player p, Card card) {
     }
 
-    @Override
-    public void notifyChosen(Card c){
-        System.out.println("You have been chosen to receive the effects of " + c);
-    }
-
-
-    public void notifyStartGame(Card card, int numPlayers, int currId){
-    }
-
-    public void notifyStartRound(Card card){
-    }
-
-    public void notifyChooseCard(Card card){
-    }
-
-    public void notifyChoosePlayer(Player p){
-    }
-
-    public void notifyPlayerPlay(Player p, Card c){
+    public void notifyStartGame( int numPlayers, int currId){
     }
 
     public void notifyPlayerWon(Player p, Card c){
@@ -89,6 +71,12 @@ public class LocalClient implements Client {
     }
 
     public void notifyPriest(Player p1, Player p2){
+    }
+
+    public void notifyReplaceCard(Card card) {
+    }
+
+    public void notifySwap(Player source, Card newCard) {
     }
 
 }

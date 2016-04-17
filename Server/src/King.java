@@ -17,6 +17,9 @@ public class King extends Card {
         assert(opponent.isActive());
         if (opponent.isProtected()) return; //no effect if chosen opponent is protected
 
+        whoPlayed.notifySwap(opponent, opponent.currentCard);
+        opponent.notifySwap(whoPlayed, whoPlayed.currentCard);
+
         Card temp = opponent.getCurrentCard();
         opponent.currentCard = whoPlayed.currentCard;
         whoPlayed.currentCard = temp;
@@ -26,14 +29,11 @@ public class King extends Card {
         for(Player p : players){
             p.notifyKing(whoPlayed, opponent);
         }
+
     }
 
     @Override
     public int getRank() {
         return rank;
-    }
-
-    private void notifyTheChosenOne(Card c, Player chosenOne){
-        chosenOne.notifyChosen(c);
     }
 }

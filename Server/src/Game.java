@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Random;
 
 import static java.lang.StrictMath.floor;
-import static java.lang.StrictMath.round;
 
 /**
  * Created by martin on 4/16/16.
@@ -12,7 +11,6 @@ import static java.lang.StrictMath.round;
 public class Game {
     List<Card> cards = new ArrayList<>();
     List<Player> players;
-    boolean roundOver = false;
     boolean gameOver = false;
     Player roundWinner = null;
     Card winningCard = null;
@@ -20,9 +18,7 @@ public class Game {
     }
 
     void createDeck() {
-        /*for (int c = 0; c < 12; c++) {
-            cards.add(new DumbCard(this));
-        }*/
+        cards.clear();
         for (int a = 1; a < 6; a++){
             switch (a){
                 case 1:
@@ -56,7 +52,7 @@ public class Game {
 
         //notify everyone that the game is on
         for (Player p : players) {
-            p.notifyStartGame(p.getCurrentCard(), players.size(), p.getId());
+            p.notifyStartGame(players.size(), p.getId());
         }
 
         //run the rounds until the game is over (a player has achieved 4 points)
@@ -83,10 +79,11 @@ public class Game {
         createDeck();
         for (Player p : players) {
             p.setupRound(drawCard());
-            p.notifyStartRound(p.getCurrentCard());
         }
 
-        do { // one iteration through the players
+        boolean roundOver = false;
+
+        while(!roundOver) { // one iteration through the players
             for (Player p : players) {
                 if (!p.isActive()) continue;    //skip this player if they are out of the round
 
@@ -118,7 +115,7 @@ public class Game {
             //TODO takeout
             System.out.println("There are " + cards.size() + " cards left in the deck");
 
-        } while (!roundOver);
+        }
 
         //TODO takeout
         System.out.println("The round is over. Deck contains " + cards.size() + "cards");
@@ -142,12 +139,15 @@ public class Game {
             }
         }
         if (count == 1) {
+            System.out.println("Win by default");
             roundWinner = lastPlayer;
             winningCard = lastPlayer.getCurrentCard();
         }
 
-        if (!cardsRemaining && count > 1)
+        if (!cardsRemaining && count > 1) {
             finalCompareHands();
+            System.out.println("Win by contest");
+        }
 
         roundOver = (count == 1) || !cardsRemaining;
         if(cards.size() > 1) cardsRemaining = true;

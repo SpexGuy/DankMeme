@@ -15,7 +15,6 @@ public class Prince extends Card {
     public void play(Player whoPlayed) {
         Player chosenPlayer = whoPlayed.choosePlayer();
         assert (chosenPlayer.isActive());
-        notifyTheChosenOne(this, chosenPlayer);
         if (chosenPlayer.isProtected()) return; //no effect if chosen player is protected
 
 
@@ -32,6 +31,7 @@ public class Prince extends Card {
         }
         else {
             chosenPlayer.currentCard = game.drawCard();
+            chosenPlayer.notifyReplaceCard(chosenPlayer.currentCard);
         }
     }
 
@@ -40,7 +40,4 @@ public class Prince extends Card {
         return rank;
     }
 
-    private void notifyTheChosenOne(Card c, Player chosenOne){
-        chosenOne.notifyChosen(c);
-    }
 }

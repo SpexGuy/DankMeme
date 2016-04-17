@@ -20,6 +20,8 @@ public class Player {
     }
 
     public void setupRound(Card card) {
+        active = true;
+        isProtected = false;
         currentCard = card;
         client.setupRound(card);
     }
@@ -42,19 +44,12 @@ public class Player {
         List<Player> players = game.getPlayers();
         if (playedCard == -1) { //if the countess hasn't been triggered then let the player choose
             playedCard = client.getPlayedCard(card);
-
         }
         if (playedCard == 1) { //new card chosen
-            for(Player p : players){
-                p.notifyPlayerPlay(this, card);
-            }
             return card;
         }
 
         // old card chosen
-        for(Player p : players){
-            p.notifyPlayerPlay(this, currentCard);
-        }
         Card temp = currentCard;
         currentCard = card;
         return temp;
@@ -63,12 +58,7 @@ public class Player {
 
     public Player choosePlayer(){
         int id = client.choosePlayer();
-        Player chosen =  game.findPlayer(id);
-        List<Player> players = game.getPlayers();
-        for(Player p : players){
-            p.notifyChoosePlayer(chosen);
-        }
-        return chosen;
+        return game.findPlayer(id);
     }
     public int chooseCard(){
         return client.chooseCard();
@@ -82,30 +72,8 @@ public class Player {
         client.notifyCardPlayed(p, c);
     }
 
-    public void notifyChosen(Card card){
-        //TODO takeout
-        System.out.println("You (player " + this.getId() +") have been chosen to receive the effects of " + card);
-        client.notifyChosen(card);
-    }
-
-    public void notifyStartGame(Card card, int numPlayers, int currId){
-        client.notifyStartGame(card, numPlayers, currId);
-    }
-
-    public void notifyStartRound(Card card){
-        client.notifyStartRound(card);
-    }
-
-    public void notifyChooseCard(Card card){
-        client.notifyChooseCard(card);
-    }
-
-    public void notifyChoosePlayer(Player p){
-        client.notifyChoosePlayer(p);
-    }
-
-    public void notifyPlayerPlay(Player p, Card c){
-        client.notifyPlayerPlay(p, c);
+    public void notifyStartGame(int numPlayers, int currId){
+        client.notifyStartGame(numPlayers, currId);
     }
 
     public void notifyPlayerWon(Player p, Card c){
@@ -178,5 +146,13 @@ public class Player {
 
     public int getScore() {
         return score;
+    }
+
+    public void notifyReplaceCard(Card currentCard) {
+        client.notifyReplaceCard(currentCard);
+    }
+
+    public void notifySwap(Player opponent, Card currentCard) {
+        client.notifySwap(opponent, currentCard);
     }
 }

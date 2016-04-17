@@ -18,7 +18,6 @@ public class Guard extends Card {
             opponent = whoPlayed.choosePlayer();
         }
         assert(opponent.isActive());
-        notifyTheChosenOne(this, opponent);
         if (opponent.isProtected()) return; //no effect if chosen player is protected
 
         int predictedCard;
@@ -43,9 +42,5 @@ public class Guard extends Card {
     @Override
     public int getRank() {
         return rank;
-    }
-
-    private void notifyTheChosenOne(Card c, Player chosenOne){
-        chosenOne.notifyChosen(c);
     }
 }
