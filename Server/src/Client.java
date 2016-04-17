@@ -8,5 +8,8 @@ public interface Client {
     int getPlayedCard(Card newCard);
     void notifyTurnStarted(Player p);
     void notifyCardPlayed(Player p, Card card);
+    int choosePlayer();
+    int chooseCard();
+    void notifyChosen(Card c);
 
 }

@@ -30,11 +30,27 @@ public class LocalClient implements Client {
         }
     }
 
+    public int choosePlayer(){
+        System.out.print("Choose a player id: ");
+        int chosenId = stdin.nextInt();
+        return chosenId;
+    }
+    public int chooseCard(){
+        System.out.print("Predict a card (rank): ");
+        int prediction = stdin.nextInt();
+        return prediction;
+    }
+
     @Override
     public void notifyTurnStarted(Player p) {
     }
 
     @Override
     public void notifyCardPlayed(Player p, Card card) {
+    }
+
+    @Override
+    public void notifyChosen(Card c){
+        System.out.println("You have been chosen to receive the effects of " + c);
     }
 }
