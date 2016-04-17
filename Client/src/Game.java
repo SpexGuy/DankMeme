@@ -18,6 +18,8 @@ public class Game {
 
     private Window window;
 
+    private Show show = new Show();
+
     private final Mouse mouse = new Mouse();
 
     private final Server server;
@@ -79,6 +81,7 @@ public class Game {
             for (PlayerView p : playerViews) {
                 p.update(delta);
             }
+            show.update(delta);
 
             // Hover updates
             Point newPos = mouse.getPosIfUpdated();
@@ -113,6 +116,7 @@ public class Game {
                 p.draw(g);
             }
             typeSelect.draw(g);
+            show.draw(g);
             cursor.draw(g);
 
             window.finishRenderFrame(g);
@@ -315,6 +319,11 @@ public class Game {
 
     public void playerWon(Player p, CardType card) {
         p.win(card);
+        if (p == self)
+            show.reset("YOU WON");
+        else
+            show.reset("Player "+p.id+" won.");
+
     }
 
     public void baron(Player p1, Player p2, boolean p1Won, CardType loserCard) {
