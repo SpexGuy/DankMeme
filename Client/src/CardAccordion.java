@@ -1,5 +1,4 @@
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,14 +12,15 @@ public class CardAccordion {
     private static final int cardHeight = (int) (scale * CardType.height);
 
     final int x, y;
-    private final List<CardType> cards = new ArrayList<>();
+    private final List<CardType> cards;
     private int currentTime = 0;
     private float currentWidth = 0;
     private boolean expanded = false;
 
-    public CardAccordion(int x, int y) {
+    public CardAccordion(int x, int y, List<CardType> cards) {
         this.x = x;
         this.y = y;
+        this.cards = cards;
     }
 
     void expand(boolean shouldExpand) {
@@ -74,12 +74,5 @@ public class CardAccordion {
 
         expanded = false;
         return false;
-    }
-
-    public void addCard(CardType card) {
-        cards.add(card);
-    }
-    public void reset() {
-        cards.clear();
     }
 }
