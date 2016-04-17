@@ -18,6 +18,8 @@ public class Game {
 
     private Window window;
 
+    private Show show = new Show();
+
     private final Hand hand = new Hand(this, WIDTH/2, HEIGHT - CardType.height);
 
     private final Mouse mouse = new Mouse();
@@ -81,6 +83,7 @@ public class Game {
             for (PlayerView p : playerViews) {
                 p.update(delta);
             }
+            show.update(delta);
 
             // Hover updates
             Point newPos = mouse.getPosIfUpdated();
@@ -118,6 +121,7 @@ public class Game {
             }
             hand.draw(g);
             typeSelect.draw(g);
+            show.draw(g);
             cursor.draw(g);
 
             window.finishRenderFrame(g);
@@ -319,6 +323,9 @@ public class Game {
 
     public void playerWon(Player p, CardType card) {
         p.win(card);
+        //TODO fix who sees the win message
+        show.reset("YOU WON");
+
     }
 
     public void baron(Player p1, Player p2, boolean p1Won, CardType loserCard) {
