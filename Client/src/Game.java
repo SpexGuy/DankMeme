@@ -24,6 +24,8 @@ public class Game {
 
     private final Server server;
 
+    private final TypeSelect typeSelect = new TypeSelect(this);
+
     private final Cursor cursor = new Cursor();
 
     private boolean gameStarted;
@@ -87,6 +89,7 @@ public class Game {
                 for (PlayerView p : playerViews) {
                     p.hover(newPos.x, newPos.y);
                 }
+                typeSelect.hover(newPos.x, newPos.y);
                 cursor.hover(newPos.x, newPos.y);
             }
 
@@ -97,6 +100,7 @@ public class Game {
                 for (PlayerView p : playerViews) {
                     p.click(clickPos.x, clickPos.y);
                 }
+                typeSelect.click(clickPos.x, clickPos.y);
             }
 
             //currentMode.act();
@@ -113,6 +117,7 @@ public class Game {
                 p.draw(g);
             }
             hand.draw(g);
+            typeSelect.draw(g);
             cursor.draw(g);
 
             window.finishRenderFrame(g);
@@ -292,11 +297,12 @@ public class Game {
     }
 
     public void guessCard() {
-        System.out.println("Guess a card");
+        typeSelect.show();
     }
 
     public void cardGuessed(CardType card) {
         server.guessCard(card);
+        typeSelect.hide();
     }
 
     public void playerStart(Player p) {
