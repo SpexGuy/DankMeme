@@ -18,8 +18,6 @@ public class Game {
 
     private Window window;
 
-    private final Hand hand = new Hand(this, WIDTH/2, HEIGHT - CardType.height);
-
     private final Mouse mouse = new Mouse();
 
     private final Server server;
@@ -32,7 +30,7 @@ public class Game {
 
     private List<Player> players;
     private List<PlayerView> playerViews;
-    private Player self;
+    private SelfPlayer self;
 
     public Game(Server server) {
         this.server = server;
@@ -85,7 +83,6 @@ public class Game {
             // Hover updates
             Point newPos = mouse.getPosIfUpdated();
             if (newPos != null) {
-                hand.hover(newPos.x, newPos.y);
                 for (PlayerView p : playerViews) {
                     p.hover(newPos.x, newPos.y);
                 }
@@ -96,7 +93,6 @@ public class Game {
             // Click updates
             Point clickPos = mouse.checkClick();
             if (clickPos != null) {
-                hand.click(clickPos.x, clickPos.y);
                 for (PlayerView p : playerViews) {
                     p.click(clickPos.x, clickPos.y);
                 }
@@ -116,7 +112,6 @@ public class Game {
             for (PlayerView p : playerViews) {
                 p.draw(g);
             }
-            hand.draw(g);
             typeSelect.draw(g);
             cursor.draw(g);
 
@@ -209,8 +204,9 @@ public class Game {
             playerWon(getPlayer(pwn.id), getCard(pwn.rank));
 
         } else if (notif instanceof ReplaceNotification) {
-            hand.replace(getCard(((ReplaceNotification) notif).rank));
-            self.discard(getCard(((ReplaceNotification) notif).rank));
+            CardType card = getCard(((ReplaceNotification) notif).rank);
+            self.replace(card);
+            self.discard(card);
 
         } else if (notif instanceof PriestNotification) {
             PriestNotification pn = (PriestNotification) notif;
@@ -242,8 +238,7 @@ public class Game {
     }
 
 
-    public void discard(CardType card, int id) {
-        // history.addCard(card);
+    public void discard(int id) {
         server.chooseCard(id);
     }
 
@@ -256,30 +251,31 @@ public class Game {
             if (c != myId) {
                 Player p = new Player(c);
                 players.add(p);
-                playerViews.add(new PlayerView(this, playerViews.size(), p));
+                playerViews.add(new OtherPlayerView(this, playerViews.size(), p));
             } else {
-                self = new Player(c); // TODO: special self player
+                self = new SelfPlayer(this, c);
                 players.add(self);
             }
         }
+        playerViews.add(new SelfPlayerView(this, self));
     }
 
     public void setup(CardType initial) {
-        hand.setup(initial);
+        self.setup(initial);
         for (Player p : players) {
             p.setup();
         }
     }
 
     public void chooseCard(CardType card) {
-        hand.addChoice(card);
+        self.addChoice(card);
     }
 
     public void choosePlayer(CardType card) {
         //choosePlayerDialog.show(card == CardType.Prince);
         System.out.println("Choose a player");
         for (PlayerView p : playerViews) {
-            p.pickable = true;
+            p.activate(card);
         }
         cursor.show(card);
     }
@@ -287,13 +283,13 @@ public class Game {
         //choosePlayerDialog.hide();
         server.choosePlayer(p.id);
         for (PlayerView v : playerViews) {
-            v.pickable = false;
+            v.deactivate();
         }
         cursor.hide();
     }
 
     public void swapCard(Player source, CardType card) {
-        hand.replace(card);
+        self.replace(card);
     }
 
     public void guessCard() {

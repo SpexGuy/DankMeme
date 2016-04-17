@@ -9,7 +9,7 @@ public class CardAccordion {
     private static final int closedWidth = 25;
     private static final int cardWidth = 50;
     private static final double scale = (double) cardWidth / CardType.width;
-    private static final int cardHeight = (int) (scale * CardType.height);
+    public static final int cardHeight = (int) (scale * CardType.height);
 
     final int x, y;
     private final List<CardType> cards;

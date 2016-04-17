@@ -5,28 +5,26 @@ import java.awt.*;
  */
 public class Hand {
     private final Game game;
+    private final SelfPlayer player;
     private final int x, y;
-    private CardType currentCard = null;
-    private CardType secondCard = null;
-    int highlight = -1;
+    private int highlight = -1;
 
-    public Hand(Game game, int x, int y) {
+    public Hand(Game game, SelfPlayer player, int x, int y) {
         this.game = game;
+        this.player = player;
         this.x = x;
         this.y = y;
     }
 
-    public void setup(CardType card) {
-        currentCard = card;
-        secondCard = null;
+    public void setup() {
         highlight = -1;
     }
 
     void draw(Graphics2D g) {
-        if (secondCard != null) {
-            assert(currentCard != null);
-            g.drawImage(currentCard.image, x - CardType.width, y, null);
-            g.drawImage(secondCard.image, x, y, null);
+        if (player.secondCard != null) {
+            assert(player.currentCard != null);
+            g.drawImage(player.currentCard.image, x - CardType.width, y, null);
+            g.drawImage(player.secondCard.image, x, y, null);
 
             g.setColor(new Color(1f, 1f, 1f, 0.2f));
             if (highlight == 0) {
@@ -35,15 +33,9 @@ public class Hand {
                 g.fillRect(x, y, CardType.width, CardType.height);
             }
 
-        } else if (currentCard != null) {
-            g.drawImage(currentCard.image, x - CardType.width/2, y, null);
+        } else if (player.currentCard != null) {
+            g.drawImage(player.currentCard.image, x - CardType.width/2, y, null);
         }
-    }
-
-    void addChoice(CardType option) {
-        assert(secondCard == null);
-        highlight = -1;
-        secondCard = option;
     }
 
     private int getCard(int mx, int my) {
@@ -56,39 +48,20 @@ public class Hand {
     }
 
     boolean hover(int mx, int my) {
-        if (secondCard == null) return false;
+        if (player.secondCard == null) return false;
 
         highlight = getCard(mx, my);
         return highlight >= 0;
     }
 
     boolean click(int mx, int my) {
-        if (secondCard == null) return false;
+        if (player.secondCard == null) return false;
 
         int card = getCard(mx, my);
         if (card < 0) return false;
 
         // We are choosing a card!!
-        if (card == 1) {
-            game.discard(secondCard, 1);
-            secondCard = null;
-        } else {
-            game.discard(currentCard, 0);
-            currentCard = secondCard;
-            secondCard = null;
-        }
-
+        player.chooseCard(card);
         return true;
-    }
-
-    public CardType removeCard() {
-        assert(secondCard == null);
-        CardType value = currentCard;
-        currentCard = null;
-        return value;
-    }
-
-    public void replace(CardType card) {
-        currentCard = card;
     }
 }

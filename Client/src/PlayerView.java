@@ -3,49 +3,38 @@ import java.awt.*;
 /**
  * Created by martin on 4/17/16.
  */
-public class PlayerView extends Button {
-    private static final int totalHeight = Game.HEIGHT - CardType.height;
-    private static final int playerHeight = totalHeight / 3;
-    private static final int playerWidth = Game.WIDTH;
+public abstract class PlayerView extends Button {
 
-    private static final int cardOffset = 10;
-    private static final int cardHeight = playerHeight - 2*cardOffset;
-    private static final double scale = (double) cardHeight / CardType.height;
-    private static final int cardWidth = (int) (scale * CardType.width);
-
-    private static final Image back = ImageStore.get().getImage("back.png");
+    protected static final Image back = ImageStore.get().getImage("back.png");
 
     final Game game;
     final Player p;
     final CardAccordion history;
-    boolean pickable = false;
+    protected boolean pickable = false;
 
-    public PlayerView(Game game, int idx, Player p) {
-        super(0, idx * playerHeight, playerWidth, playerHeight);
+    public PlayerView(Game game, int x, int y, int width, int height, CardAccordion history, Player p) {
+        super(x, y, width, height);
         this.game = game;
         this.p = p;
-        this.history = new CardAccordion(cardOffset + cardWidth + 50 + cardOffset, y + cardOffset, p.history);
+        this.history = history;
     }
 
     void draw(Graphics2D g) {
         g.setColor(Color.WHITE);
-        g.drawRoundRect(0, y, playerWidth, playerHeight, 10, 10);
-        if (p.active) {
-            if (p.protect) {
-                g.setColor(new Color(1f,1f,1f,0.2f));
-                g.fillRoundRect(0, y, playerWidth, playerHeight, 10, 10);
-            }
-            g.drawImage(back, cardOffset, y + cardOffset, cardWidth, cardHeight, null);
-            if (p.isChoosing) {
-                g.drawImage(back, cardOffset + 60, y + cardOffset, cardWidth, cardHeight, null);
-            }
+        g.drawRoundRect(x, y, width, height, 10, 10);
+        if (p.active && p.protect) {
+            g.setColor(new Color(1f,1f,1f,0.2f));
+            g.fillRoundRect(x, y, width, height, 10, 10);
         }
+        drawCards(g);
         history.draw(g);
         if (p.active && pickable && hovered) {
             g.setColor(new Color(1f, 1f, 1f, 0.3f));
-            g.fillRoundRect(0, y, playerWidth, playerHeight, 10, 10);
+            g.fillRoundRect(x, y, width, height, 10, 10);
         }
     }
+
+    abstract void drawCards(Graphics2D g);
 
     @Override
     void activate() {
@@ -60,8 +49,21 @@ public class PlayerView extends Button {
         return history.hover(mx, my);
     }
 
+    @Override
+    boolean click(int mx, int my) {
+        if (pickable) return super.click(mx, my);
+        return false;
+    }
+
     public void update(int dt) {
         history.update(dt);
+    }
+
+    public void activate(CardType card) {
+        pickable = true;
+    }
+    public void deactivate() {
+        pickable = false;
     }
 }
 
