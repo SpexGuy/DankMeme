@@ -13,7 +13,7 @@ public class Server {
     ObjectOutputStream oos;
 
     void connect() throws IOException {
-        s = new Socket("127.0.0.1", 0x1337);
+        s = new Socket("127.0.0.1", 0x1337); //172.16.46.97
         oos = new ObjectOutputStream(s.getOutputStream());
         ois = new ObjectInputStream(s.getInputStream());
         System.out.println("Connected to server!");
